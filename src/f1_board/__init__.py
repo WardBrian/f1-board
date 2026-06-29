@@ -53,12 +53,12 @@ class Data(bullpen.api.PluginData):
                 races = requests.get(RACES_URL.format(self.year), timeout=10).json()["MRData"]["RaceTable"]["Races"]
                 for race in races:
                     date = datetime.datetime.strptime(race["date"], "%Y-%m-%d")
-                    time = race.get("time", "TBD")
-                    if time != "TBD":
-                        time = datetime.time.fromisoformat(time)
-                        date = datetime.datetime.combine(date, time)
+                    race_time = race.get("time", "TBD")
+                    if race_time != "TBD":
+                        race_time = datetime.time.fromisoformat(race_time)
+                        date = datetime.datetime.combine(date, race_time)
                         date = date.astimezone(tzlocal.get_localzone())
-                        time = date.strftime(self.time_fmt_str)
+                        race_time = date.strftime(self.time_fmt_str)
 
                     if date.date() >= self.today:
                         next_race = {}
@@ -68,7 +68,7 @@ class Data(bullpen.api.PluginData):
                         )
                         next_race["round"] = race["round"]
 
-                        next_race["time"] = time
+                        next_race["time"] = race_time
                         next_race["date"] = date.strftime(os_datetime_format("%b %-d"))
                         next_race["circuitId"] = race["Circuit"]["circuitId"].lower()
 
