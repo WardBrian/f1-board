@@ -78,6 +78,9 @@ class Data(bullpen.api.PluginData):
             except Exception as e:
                 LOGGER.exception("Failed to fetch F1 data: %s", e)
                 return UpdateStatus.FAIL
+            finally:
+                self.starttime = time.time()
+
             return UpdateStatus.SUCCESS
         return UpdateStatus.DEFERRED
 
