@@ -91,8 +91,13 @@ class Data(bullpen.api.PluginData):
 
 
 def decode_image(image_str):
-    return Image.open(io.BytesIO(base64.b64decode(image_str)))
-
+    try:
+        img = Image.open(io.BytesIO(base64.b64decode(image_str)))
+        img.load()
+        return img
+    except Exception as e:
+        LOGGER.exception("Failed to decode image: %s", e)
+        return None
 
 class Renderer(bullpen.api.PluginRenderer[Data]):
     TRACK_IMG_BASE_HEIGHT = 23
